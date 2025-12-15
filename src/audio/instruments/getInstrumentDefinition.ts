@@ -8,6 +8,6 @@ export const instrumentDefinitions = {
 
 export type InstrumentId = keyof typeof instrumentDefinitions;
 
-export function getInstrumentDefinition(id: InstrumentId): InstrumentDefinition {
-  return instrumentDefinitions[id];
+export function getInstrumentDefinition(type: InstrumentId): InstrumentDefinition {
+  return instrumentDefinitions[type];
 }

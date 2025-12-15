@@ -1,14 +1,14 @@
 import { writable } from "svelte/store";
 
 export interface InstrumentState {
-  type: string;
+    id: string;
+    type: string;
+    params: Record<string, any>;
 
-  params: Record<string, any>;
-
-  voice?: {
-    notes?: Set<number>;
-  };
+    voice?: {
+        notes?: Set<number>;
+    };
 }
 
 export const instruments =
-  writable<Record<string, InstrumentState>>({});
+    writable<Record<string, InstrumentState>>({});

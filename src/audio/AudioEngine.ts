@@ -1,22 +1,48 @@
 import { InstrumentRuntime } from "./InstrumentRuntime.ts";
 import { selectInstrument } from "../stores/selectInstrument";
-import { getInstrumentDefinition } from "./instruments/getInstrumentDefinition";
+import type { InstrumentDefinition } from "./instruments/InstrumentDefintion.ts";
+
+import { browser } from '$app/environment';
+
 
 export class AudioEngine {
-    readonly context: AudioContext;
+    context: AudioContext | null;
 
     runtimes: Map<string, InstrumentRuntime>;
     unsubscribes: Map<string, () => void>;
 
     constructor() {
-        this.context = new AudioContext();
+        this.context = null;
         this.runtimes = new Map();
-        this.unsubscribes = new Map();  
+        this.unsubscribes = new Map();
     }
 
-    createInstrument(id: string, defintionId: string, ctx: AudioContext) {
-        const defintion = getInstrumentDefinition(defintionId);
-        const runtime = new InstrumentRuntime(id, this.context, defintion);
+    init() {
+        if (!browser) return;
+
+        if (!this.context) {
+            this.context = new AudioContext();
+        }
+
+        if (this.context.state === "suspended") {
+            this.context.resume();
+        }
+    }
+
+    private requireContext(): AudioContext {
+        if (!this.context) {
+            throw new Error("AudioEngine not initialized. Call init() from a user gesture.");
+        }
+        return this.context;
+    }
+
+    createInstrument(id: string, definition: InstrumentDefinition) {
+        // Consider initializing on a load screen user gesture
+        this.init();
+        
+        const context = this.requireContext();
+
+        const runtime = new InstrumentRuntime(id, context, definition);
 
         const unsubscribe = selectInstrument(id).subscribe((state) => {
             if (!state) return;
@@ -42,11 +68,23 @@ export class AudioEngine {
 
     connectInstrumentToOutput(instrumentId: string) {
         const instrument = this.runtimes.get(instrumentId);
+        const context = this.requireContext();
         if (instrument) {
-            instrument.outputs[0].connect(this.context.destination);
+            instrument.outputs[0].connect(context.destination);
         } else {
             throw new Error(`Instrument with ID ${instrumentId} not found.`);
         }
     }
+}
 
+let engine: AudioEngine | null = null;
+
+export function getAudioEngine() {
+    if (!browser) return null;
+
+    if (!engine) {
+        engine = new AudioEngine();
+    }
+
+    return engine;
 }
