@@ -1,0 +1,32 @@
+{
+    "meta": {
+        "name": "Test Instrument",
+        "author": "Tester",
+        "version": "1.0.0"
+    },
+    "input": {
+        "type": "testKeyboard",
+        "settings": {}
+    },
+    "grid": {
+        "rows": 1,
+        "cols": 1
+    },
+    "modules": {
+        "osc1": {
+            "type": "oscillator",
+            "pos": {
+                "x": 0,
+                "y": 0
+            },
+            "params": {
+                "waveform": "sine",
+                "frequency": 440
+            }
+        }
+    },
+    "routing": [
+        ["input", "osc1"],
+        ["osc1", "output"]
+    ]
+}
