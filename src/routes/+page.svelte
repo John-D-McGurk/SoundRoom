@@ -1,6 +1,6 @@
 <script>
-import AddInstrument from "../components/AddInstrument.svelte";
+import InstrumentContainer from "../components/InstrumentContainer.svelte";
 </script>
 
-<AddInstrument />
+<InstrumentContainer />
 

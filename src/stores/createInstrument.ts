@@ -4,9 +4,10 @@ import { nanoid } from "nanoid";
 
 export function createInstrument(type: string) {
     const definition = getInstrumentDefinition(type);
-    const params = Object.values(definition.modules)
-        .map((mod) => mod.params)
-        .reduce((acc, params) => ({ ...acc, ...params }), {});
+    const params = Object.entries(definition.modules).reduce(
+        (acc, [name, mod]) => ({ ...acc, [name]: mod.params }),
+        {} as Record<string, Record<string, unknown>>
+    );
 
 
     const id = nanoid();

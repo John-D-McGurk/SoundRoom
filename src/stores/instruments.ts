@@ -3,7 +3,7 @@ import { writable } from "svelte/store";
 export interface InstrumentState {
     id: string;
     type: string;
-    params: Record<string, any>;
+    params: Record<string, Record<string, any>>;
 
     voice?: {
         notes?: Set<number>;
