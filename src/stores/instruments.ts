@@ -4,11 +4,10 @@ export interface InstrumentState {
     id: string;
     type: string;
     params: Record<string, Record<string, any>>;
-
-    voice?: {
+    voices?: Array<{
         notes?: Set<number>;
-    };
+    }>;
 }
 
 export const instruments =
-    writable<Record<string, InstrumentState>>({});
+    writable<Record<string, InstrumentState>>({});{}

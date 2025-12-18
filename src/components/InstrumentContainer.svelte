@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { createInstrument } from "../stores/createInstrument";
+    import { createInstrument } from "../controllers/createInstrument";
     import { getAudioEngine } from "../audio/AudioEngine";
     import { instruments as instrumentsStore } from "../stores/instruments";
 

@@ -10,7 +10,9 @@ export type InstrumentDefinition = {
         author?: string;
         version: string;
     };
-    input: Record<string, unknown>;
+    input: { 
+        type: string;
+    } & Record<string, unknown>;
     grid: {
         rows: number;
         cols: number;

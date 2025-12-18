@@ -1,5 +1,4 @@
 import { InstrumentRuntime } from "./InstrumentRuntime.ts";
-import { selectInstrument } from "../stores/selectInstrument";
 import type { InstrumentDefinition } from "./instruments/InstrumentDefintion.ts";
 
 import { browser } from '$app/environment';
@@ -9,12 +8,10 @@ export class AudioEngine {
     context: AudioContext | null;
 
     runtimes: Map<string, InstrumentRuntime>;
-    unsubscribes: Map<string, () => void>;
 
     constructor() {
         this.context = null;
         this.runtimes = new Map();
-        this.unsubscribes = new Map();
     }
 
     init() {
@@ -37,29 +34,17 @@ export class AudioEngine {
     }
 
     createInstrument(id: string, definition: InstrumentDefinition) {
-        // Consider initializing on a load screen user gesture
         this.init();
         
         const context = this.requireContext();
 
         const runtime = new InstrumentRuntime(id, context, definition);
 
-        const unsubscribe = selectInstrument(id).subscribe((state) => {
-            if (!state) return;
-            runtime.updateParams(state.params);
-        });
-
         this.runtimes.set(id, runtime);
-        this.unsubscribes.set(id, unsubscribe);
     }
 
     destroyInstrument(id: string) {
         const runtime = this.runtimes.get(id);
-        const unsubscribe = this.unsubscribes.get(id);
-        if (unsubscribe) {
-            unsubscribe();
-            this.unsubscribes.delete(id);
-        }
         if (runtime) {
             runtime.destroy();
             this.runtimes.delete(id);
@@ -74,6 +59,14 @@ export class AudioEngine {
         } else {
             throw new Error(`Instrument with ID ${instrumentId} not found.`);
         }
+    }
+
+    setParam(instrumentId: string, moduleId: string, param: string, value: number) {
+        this.runtimes.get(instrumentId)?.setParam(moduleId, param, value);
+    }
+
+    playNote(instrumentId: string, note: number, velocity: number) {
+        this.runtimes.get(instrumentId)?.playNote(note, velocity);
     }
 }
 

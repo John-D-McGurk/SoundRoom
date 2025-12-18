@@ -1,6 +1,8 @@
 <script>
     import Knob from "../common/Knob.svelte";
-    const { state } = $props();
+    const { instanceId, moduleId, state } = $props();
+    console.log("Oscillator instanceId:", instanceId);
+    console.log("Oscillator moduleId:", moduleId);
     console.log("Oscillator state:", state);
 </script>
 
